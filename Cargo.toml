@@ -1,0 +1,7 @@
+[workspace]
+members = [
+  "community-managed-token/program",
+]
+
+[profile.dev]
+split-debuginfo = "unpacked"

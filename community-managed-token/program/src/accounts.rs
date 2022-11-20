@@ -1,4 +1,4 @@
-use crate::assert_with_msg;
+use crate::{assert_with_msg, id};
 use solana_program::{
     account_info::{next_account_info, AccountInfo},
     program_error::ProgramError,
@@ -537,6 +537,16 @@ impl<'a, 'info> Wrap<'a, 'info> {
             ctx.token_program.key == &spl_token::id(),
             ProgramError::InvalidInstructionData,
             "Invalid key supplied for Token Program",
+        )?;
+        assert_with_msg(
+            ctx.freeze_authority.owner != &id(),
+            ProgramError::IllegalOwner,
+            "freeze_authority already wrapped",
+        )?;
+        assert_with_msg(
+            ctx.mint_authority.owner != &id(),
+            ProgramError::IllegalOwner,
+            "mint_authority already wrapped",
         )?;
         Ok(ctx)
     }

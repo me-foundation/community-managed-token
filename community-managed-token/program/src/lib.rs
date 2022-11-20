@@ -277,17 +277,6 @@ pub fn process_wrap(accounts: &[AccountInfo]) -> ProgramResult {
         token_program,
         mint_authority,
     } = Wrap::load(accounts)?;
-    assert_with_msg(
-        freeze_authority.owner != &id(),
-        ProgramError::IllegalOwner,
-        "freeze_authority already wrapped",
-    )?;
-    assert_with_msg(
-        mint_authority.owner != &id(),
-        ProgramError::IllegalOwner,
-        "mint_authority already wrapped",
-    )?;
-
     let (authority, _) = get_authority(upstream_authority.key);
     set_authority(
         mint,

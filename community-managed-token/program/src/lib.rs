@@ -142,7 +142,7 @@ pub fn process_initialize_account(accounts: &[AccountInfo]) -> ProgramResult {
         token_program,
     } = InitializeAccount::load(accounts)?;
     invoke(
-        &create_associated_token_account(payer.key, owner.key, mint.key, token_program.key),
+        &create_associated_token_account(payer.key, owner.key, mint.key),
         &[
             associated_token_program.clone(),
             payer.clone(),

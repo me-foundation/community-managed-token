@@ -11,10 +11,10 @@ use solana_sdk::{
     transaction::Transaction,
 };
 
+use community_managed_token::instruction::*;
 use spl_associated_token_account::{
     get_associated_token_address, instruction::create_associated_token_account,
 };
-use community_managed_token::instruction::*;
 
 pub fn sol(amount: f64) -> u64 {
     (amount * LAMPORTS_PER_SOL as f64) as u64
@@ -126,8 +126,7 @@ async fn test_community_managed_token_basic() {
             .unwrap();
     }
 
-    let create_eve =
-        create_associated_token_account(&authority.pubkey(), &eve_key, &mint_key, &spl_token::id());
+    let create_eve = create_associated_token_account(&authority.pubkey(), &eve_key, &mint_key);
     process_transaction(lwc, vec![create_eve], vec![&authority])
         .await
         .unwrap();

@@ -10,6 +10,7 @@ For composability purpose and follow the original spl_managed_token's philosophy
 | Mainnet |    CMTQqjzH6Anr9XcPVt73EFDTjWkJWPzH7H6DtvhHcyzV |
 
 Entrypoints:
+- InitializeMint
 - InitializeAccount
 - Transfer
 - MintTo

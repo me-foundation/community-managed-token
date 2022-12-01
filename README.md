@@ -1,6 +1,6 @@
 # Community Managed Token (CMT)
 
-Community Managed Token is a community effort of extending the [spl_managed_token](https://github.com/solana-labs/solana-program-library/tree/master/managed-token) to support a full proxy of spl_token interfaces. Specifically to extend the support of 'Approve', 'Revoke', and 'Wrap' for existing mints.
+Community Managed Token is an exact 1:1 code deployment of the [spl_managed_token](https://github.com/solana-labs/solana-program-library/tree/master/managed-token) to support a full proxy of spl_token interfaces.
 
 For composability purpose and follow the original spl_managed_token's philosophy, the goal of CMT is to  have a upstream_authority (usually from a upstream program's PDA) that controls the use cases of the token.
 
@@ -10,7 +10,6 @@ For composability purpose and follow the original spl_managed_token's philosophy
 | Mainnet |    CMTQqjzH6Anr9XcPVt73EFDTjWkJWPzH7H6DtvhHcyzV |
 
 Entrypoints:
-- InitializeMint
 - InitializeAccount
 - Transfer
 - MintTo
@@ -18,8 +17,6 @@ Entrypoints:
 - CloseAccount
 - Approve
 - Revoke
-- Wrap
-
 
 ## Build
 

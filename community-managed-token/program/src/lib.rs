@@ -23,9 +23,10 @@ pub fn assert_with_msg(v: bool, err: impl Into<ProgramError>, msg: &str) -> Prog
 pub mod accounts;
 pub mod instruction;
 pub mod token;
-use accounts::{Approve, Burn, Close, InitializeAccount, InitializeMint, Mint, Revoke, Transfer};
+use accounts::{Approve, Burn, Close, InitializeAccount, InitializeMint, Mint, Revoke, Transfer, MigrateAuthority};
 use instruction::ManagedTokenInstruction;
-use token::{approve, burn, close, freeze, initialize_mint, mint_to, revoke, thaw, transfer};
+use spl_token::instruction::AuthorityType;
+use token::{approve, burn, close, freeze, initialize_mint, mint_to, revoke, thaw, transfer, set_authority};
 
 #[cfg(not(feature = "no-entrypoint"))]
 solana_program::entrypoint!(process_instruction);
@@ -93,6 +94,10 @@ pub fn process_instruction(
         ManagedTokenInstruction::Revoke => {
             msg!("ManagedTokenInstruction::Revoke");
             process_revoke(accounts)
+        }
+        ManagedTokenInstruction::MigrateAuthority => {
+            msg!("ManagedTokenInstruction::MigrationAuthority");
+            process_migrate_authority(accounts)
         }
     }
 }
@@ -258,4 +263,32 @@ pub fn process_revoke(accounts: &[AccountInfo]) -> ProgramResult {
     thaw(freeze_authority, mint, token_account, token_program, &seeds)?;
     revoke(token_account, owner, token_program)?;
     freeze(freeze_authority, mint, token_account, token_program, &seeds)
+}
+
+pub fn process_migrate_authority(accounts: &[AccountInfo]) -> ProgramResult {
+    let MigrateAuthority {
+        mint,
+        upstream_authority,
+        authority,
+        new_freeze_authority,
+        new_mint_authority,
+        token_program,
+    } = MigrateAuthority::load(accounts)?;
+    let seeds = get_authority_seeds_checked(upstream_authority.key, authority.key)?;
+    set_authority(
+        mint,
+        &new_mint_authority.key,
+        AuthorityType::MintTokens,
+        authority,
+        token_program,
+        &seeds,
+    )?;
+    set_authority(
+        mint,
+        &new_freeze_authority.key,
+        AuthorityType::FreezeAccount,
+        authority,
+        token_program,
+        &seeds,
+    )
 }

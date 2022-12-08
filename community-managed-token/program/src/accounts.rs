@@ -494,3 +494,42 @@ impl<'a, 'info> Revoke<'a, 'info> {
         Ok(ctx)
     }
 }
+
+pub struct MigrateAuthority<'a, 'info> {
+    pub mint: &'a AccountInfo<'info>,
+    pub upstream_authority: &'a AccountInfo<'info>,
+    pub authority: &'a AccountInfo<'info>,
+    pub new_freeze_authority: &'a AccountInfo<'info>,
+    pub new_mint_authority: &'a AccountInfo<'info>,
+    pub token_program: &'a AccountInfo<'info>,
+}
+
+impl<'a, 'info> MigrateAuthority<'a, 'info> {
+    pub fn load(accounts: &'a [AccountInfo<'info>]) -> Result<Self, ProgramError> {
+        let account_iter = &mut accounts.iter();
+        let ctx = Self {
+            mint: next_account_info(account_iter)?,
+            upstream_authority: next_account_info(account_iter)?,
+            authority: next_account_info(account_iter)?,
+            new_freeze_authority: next_account_info(account_iter)?,
+            new_mint_authority: next_account_info(account_iter)?,
+            token_program: next_account_info(account_iter)?,
+        };
+        assert_with_msg(
+            ctx.mint.owner == &spl_token::id(),
+            ProgramError::IllegalOwner,
+            "Mint account must be owned by the Token Program",
+        )?;
+        assert_with_msg(
+            ctx.token_program.key == &spl_token::id(),
+            ProgramError::InvalidInstructionData,
+            "Invalid key supplied for Token Program",
+        )?;
+        assert_with_msg(
+            ctx.upstream_authority.is_signer,
+            ProgramError::MissingRequiredSignature,
+            "Freeze authority must sign for modification",
+        )?;
+        Ok(ctx)
+    }
+}

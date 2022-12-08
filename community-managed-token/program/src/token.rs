@@ -4,6 +4,7 @@ use solana_program::{
     program::{invoke, invoke_signed},
     pubkey::Pubkey,
 };
+use spl_token::instruction::AuthorityType;
 
 pub(crate) fn initialize_mint<'a, 'b>(
     freeze_authority: &Pubkey,
@@ -207,5 +208,31 @@ pub(crate) fn close<'a, 'b>(
             account.clone(),
             owner.clone(),
         ],
+    )
+}
+
+pub(crate) fn set_authority<'a, 'b>(
+    mint: &'a AccountInfo<'b>,
+    new_authority: &Pubkey,
+    authority_type: AuthorityType,
+    current_authority: &'a AccountInfo<'b>,
+    token_program: &'a AccountInfo<'b>,
+    seeds: &[Vec<u8>],
+) -> ProgramResult {
+    invoke_signed(
+        &spl_token::instruction::set_authority(
+            token_program.key,
+            mint.key,
+            Some(new_authority),
+            authority_type,
+            current_authority.key,
+            &[],
+        )?,
+        &[
+            token_program.clone(),
+            mint.clone(),
+            current_authority.clone(),
+        ],
+        &[&seeds.iter().map(|s| s.as_slice()).collect::<Vec<&[u8]>>()],
     )
 }

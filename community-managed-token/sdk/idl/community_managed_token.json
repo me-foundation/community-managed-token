@@ -392,6 +392,11 @@
           "isSigner": true
         },
         {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "newFreezeAuthority",
           "isMut": false,
           "isSigner": false

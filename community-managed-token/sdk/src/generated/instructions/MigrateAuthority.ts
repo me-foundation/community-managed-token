@@ -22,6 +22,7 @@ export const MigrateAuthorityStruct = new beet.BeetArgsStruct<{
  *
  * @property [_writable_] mint
  * @property [**signer**] upstreamAuthority
+ * @property [] authority
  * @property [] newFreezeAuthority
  * @property [] newMintAuthority
  * @category Instructions
@@ -31,6 +32,7 @@ export const MigrateAuthorityStruct = new beet.BeetArgsStruct<{
 export type MigrateAuthorityInstructionAccounts = {
   mint: web3.PublicKey
   upstreamAuthority: web3.PublicKey
+  authority: web3.PublicKey
   newFreezeAuthority: web3.PublicKey
   newMintAuthority: web3.PublicKey
   tokenProgram?: web3.PublicKey
@@ -63,6 +65,11 @@ export function createMigrateAuthorityInstruction(
       pubkey: accounts.upstreamAuthority,
       isWritable: false,
       isSigner: true,
+    },
+    {
+      pubkey: accounts.authority,
+      isWritable: false,
+      isSigner: false,
     },
     {
       pubkey: accounts.newFreezeAuthority,

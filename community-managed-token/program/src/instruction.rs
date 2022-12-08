@@ -90,9 +90,10 @@ pub enum ManagedTokenInstruction {
 
     #[account(0, writable, name = "mint")]
     #[account(1, signer, name = "upstream_authority")]
-    #[account(2, name = "new_freeze_authority")]
-    #[account(3, name = "new_mint_authority")]
-    #[account(4, name = "token_program", desc = "Token program")]
+    #[account(2, name = "authority")]
+    #[account(3, name = "new_freeze_authority")]
+    #[account(4, name = "new_mint_authority")]
+    #[account(5, name = "token_program", desc = "Token program")]
     MigrateAuthority,
 }
 

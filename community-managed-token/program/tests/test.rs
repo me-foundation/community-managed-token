@@ -322,9 +322,13 @@ async fn test_migrate_authority() {
         .unwrap();
     let mint = Keypair::new();
     let mint_key = mint.pubkey();
-    let create_ix =
-        create_initialize_mint_instruction(&mint_key, &upstream_authority.pubkey(), &upstream_authority.pubkey(), 0)
-            .unwrap();
+    let create_ix = create_initialize_mint_instruction(
+        &mint_key,
+        &upstream_authority.pubkey(),
+        &upstream_authority.pubkey(),
+        0,
+    )
+    .unwrap();
     process_transaction(lwc, vec![create_ix], vec![&upstream_authority, &mint])
         .await
         .unwrap();
@@ -349,6 +353,10 @@ async fn test_migrate_authority() {
         .await
         .unwrap();
 
-    assert!(mint_acc.freeze_authority.eq(&COption::Some(new_authority.pubkey())));
-    assert!(mint_acc.mint_authority.eq(&COption::Some(new_authority.pubkey())));
+    assert!(mint_acc
+        .freeze_authority
+        .eq(&COption::Some(new_authority.pubkey())));
+    assert!(mint_acc
+        .mint_authority
+        .eq(&COption::Some(new_authority.pubkey())));
 }

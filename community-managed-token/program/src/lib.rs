@@ -23,10 +23,15 @@ pub fn assert_with_msg(v: bool, err: impl Into<ProgramError>, msg: &str) -> Prog
 pub mod accounts;
 pub mod instruction;
 pub mod token;
-use accounts::{Approve, Burn, Close, InitializeAccount, InitializeMint, Mint, Revoke, Transfer, MigrateAuthority};
+use accounts::{
+    Approve, Burn, Close, InitializeAccount, InitializeMint, MigrateAuthority, Mint, Revoke,
+    Transfer,
+};
 use instruction::ManagedTokenInstruction;
 use spl_token::instruction::AuthorityType;
-use token::{approve, burn, close, freeze, initialize_mint, mint_to, revoke, thaw, transfer, set_authority};
+use token::{
+    approve, burn, close, freeze, initialize_mint, mint_to, revoke, set_authority, thaw, transfer,
+};
 
 #[cfg(not(feature = "no-entrypoint"))]
 solana_program::entrypoint!(process_instruction);
@@ -277,7 +282,7 @@ pub fn process_migrate_authority(accounts: &[AccountInfo]) -> ProgramResult {
     let seeds = get_authority_seeds_checked(upstream_authority.key, authority.key)?;
     set_authority(
         mint,
-        &new_mint_authority.key,
+        new_mint_authority.key,
         AuthorityType::MintTokens,
         authority,
         token_program,
@@ -285,7 +290,7 @@ pub fn process_migrate_authority(accounts: &[AccountInfo]) -> ProgramResult {
     )?;
     set_authority(
         mint,
-        &new_freeze_authority.key,
+        new_freeze_authority.key,
         AuthorityType::FreezeAccount,
         authority,
         token_program,

@@ -333,7 +333,6 @@ async fn test_migrate_authority() {
         .await
         .unwrap();
 
-    // Try transfer the normal way
     let migrate_authority_ix = create_migrate_authority_instruction(
         &mint.pubkey(),
         &upstream_authority.pubkey(),

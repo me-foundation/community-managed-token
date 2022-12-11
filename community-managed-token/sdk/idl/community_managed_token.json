@@ -1,5 +1,5 @@
 {
-  "version": "0.1.3",
+  "version": "0.1.4",
   "name": "community_managed_token",
   "instructions": [
     {
@@ -376,6 +376,47 @@
       "discriminant": {
         "type": "u8",
         "value": 7
+      }
+    },
+    {
+      "name": "MigrateAuthority",
+      "accounts": [
+        {
+          "name": "mint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "upstreamAuthority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "newFreezeAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "newMintAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false,
+          "desc": "Token program"
+        }
+      ],
+      "args": [],
+      "discriminant": {
+        "type": "u8",
+        "value": 8
       }
     }
   ],

@@ -15,7 +15,7 @@ use community_managed_token::instruction::*;
 use spl_associated_token_account::{
     get_associated_token_address, instruction::create_associated_token_account,
 };
-use spl_token::state::Account as TokenAccount;
+use spl_token::state::{Account as TokenAccount, Mint};
 
 pub fn sol(amount: f64) -> u64 {
     (amount * LAMPORTS_PER_SOL as f64) as u64
@@ -309,4 +309,53 @@ async fn test_spl_managed_token_with_delegate_transfer() {
         .amount
             == 1
     );
+}
+
+#[tokio::test]
+async fn test_migrate_authority() {
+    let mut context = spl_managed_token_test().start_with_context().await;
+    let lwc = &mut context.banks_client;
+    let upstream_authority = Keypair::new();
+    let new_authority = Keypair::new();
+    transfer(lwc, &context.payer, &upstream_authority.pubkey(), sol(10.0))
+        .await
+        .unwrap();
+    let mint = Keypair::new();
+    let mint_key = mint.pubkey();
+    let create_ix = create_initialize_mint_instruction(
+        &mint_key,
+        &upstream_authority.pubkey(),
+        &upstream_authority.pubkey(),
+        0,
+    )
+    .unwrap();
+    process_transaction(lwc, vec![create_ix], vec![&upstream_authority, &mint])
+        .await
+        .unwrap();
+
+    let migrate_authority_ix = create_migrate_authority_instruction(
+        &mint.pubkey(),
+        &upstream_authority.pubkey(),
+        &new_authority.pubkey(),
+        &new_authority.pubkey(),
+    )
+    .unwrap();
+
+    assert!(
+        process_transaction(lwc, vec![migrate_authority_ix], vec![&upstream_authority])
+            .await
+            .is_ok()
+    );
+
+    let mint_acc = lwc
+        .get_packed_account_data::<Mint>(mint.pubkey())
+        .await
+        .unwrap();
+
+    assert!(mint_acc
+        .freeze_authority
+        .eq(&COption::Some(new_authority.pubkey())));
+    assert!(mint_acc
+        .mint_authority
+        .eq(&COption::Some(new_authority.pubkey())));
 }

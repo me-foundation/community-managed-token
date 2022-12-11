@@ -87,6 +87,14 @@ pub enum ManagedTokenInstruction {
     #[account(4, name = "freeze_authority")]
     #[account(5, name = "token_program", desc = "Token program")]
     Revoke,
+
+    #[account(0, writable, name = "mint")]
+    #[account(1, signer, name = "upstream_authority")]
+    #[account(2, name = "authority")]
+    #[account(3, name = "new_freeze_authority")]
+    #[account(4, name = "new_mint_authority")]
+    #[account(5, name = "token_program", desc = "Token program")]
+    MigrateAuthority,
 }
 
 pub fn create_initialize_mint_instruction(
@@ -291,5 +299,26 @@ pub fn create_revoke_instruction(
             AccountMeta::new_readonly(spl_token::id(), false),
         ],
         data: ManagedTokenInstruction::Revoke.try_to_vec()?,
+    })
+}
+
+pub fn create_migrate_authority_instruction(
+    mint: &Pubkey,
+    upstream_authority: &Pubkey,
+    new_freeze_authority: &Pubkey,
+    new_mint_authority: &Pubkey,
+) -> Result<Instruction, ProgramError> {
+    let (authority, _) = get_authority(upstream_authority);
+    Ok(Instruction {
+        program_id: crate::id(),
+        accounts: vec![
+            AccountMeta::new(*mint, false),
+            AccountMeta::new_readonly(*upstream_authority, true),
+            AccountMeta::new_readonly(authority, false),
+            AccountMeta::new_readonly(*new_freeze_authority, false),
+            AccountMeta::new_readonly(*new_mint_authority, false),
+            AccountMeta::new_readonly(spl_token::id(), false),
+        ],
+        data: ManagedTokenInstruction::MigrateAuthority.try_to_vec()?,
     })
 }

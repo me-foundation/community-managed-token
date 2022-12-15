@@ -238,6 +238,7 @@ pub fn create_burn_instruction(
 pub fn create_close_account_instruction(
     mint: &Pubkey,
     owner: &Pubkey,
+    destination: &Pubkey,
     upstream_authority: &Pubkey,
 ) -> Result<Instruction, ProgramError> {
     let account = get_associated_token_address(owner, mint);
@@ -246,7 +247,7 @@ pub fn create_close_account_instruction(
         program_id: crate::id(),
         accounts: vec![
             AccountMeta::new(account, false),
-            AccountMeta::new(*owner, false),
+            AccountMeta::new(*destination, false),
             AccountMeta::new_readonly(*mint, false),
             AccountMeta::new_readonly(*owner, true),
             AccountMeta::new_readonly(*upstream_authority, true),

@@ -257,6 +257,29 @@ pub fn create_close_account_instruction(
     })
 }
 
+pub fn create_close_account_with_destination_instruction(
+    mint: &Pubkey,
+    owner: &Pubkey,
+    destination: &Pubkey,
+    upstream_authority: &Pubkey,
+) -> Result<Instruction, ProgramError> {
+    let account = get_associated_token_address(owner, mint);
+    let (freeze_authority, _) = get_authority(upstream_authority);
+    Ok(Instruction {
+        program_id: crate::id(),
+        accounts: vec![
+            AccountMeta::new(account, false),
+            AccountMeta::new(*destination, false),
+            AccountMeta::new_readonly(*mint, false),
+            AccountMeta::new_readonly(*owner, true),
+            AccountMeta::new_readonly(*upstream_authority, true),
+            AccountMeta::new_readonly(freeze_authority, false),
+            AccountMeta::new_readonly(spl_token::id(), false),
+        ],
+        data: ManagedTokenInstruction::CloseAccount.try_to_vec()?,
+    })
+}
+
 pub fn create_approve_instruction(
     mint: &Pubkey,
     owner: &Pubkey,

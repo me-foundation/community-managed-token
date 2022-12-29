@@ -1,5 +1,5 @@
 {
-  "version": "0.1.5",
+  "version": "0.2.0",
   "name": "community_managed_token",
   "instructions": [
     {
@@ -423,7 +423,7 @@
   "metadata": {
     "origin": "shank",
     "address": "CMTQqjzH6Anr9XcPVt73EFDTjWkJWPzH7H6DtvhHcyzV",
-    "binaryVersion": "0.0.10",
-    "libVersion": "^0.0.10"
+    "binaryVersion": "0.0.11",
+    "libVersion": "^0.0.11"
   }
 }

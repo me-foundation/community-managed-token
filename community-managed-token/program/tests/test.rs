@@ -97,7 +97,8 @@ async fn test_spl_managed_token_basic() {
             .unwrap();
     }
 
-    let create_eve = create_associated_token_account(&authority.pubkey(), &eve_key, &mint_key);
+    let create_eve =
+        create_associated_token_account(&authority.pubkey(), &eve_key, &mint_key, &spl_token::id());
     process_transaction(lwc, vec![create_eve], vec![&authority])
         .await
         .unwrap();

@@ -51,7 +51,7 @@ async fn transfer(
 
 fn spl_managed_token_test() -> ProgramTest {
     ProgramTest::new(
-        "spl_managed_token",
+        "community_managed_token",
         community_managed_token::id(),
         processor!(community_managed_token::process_instruction),
     )
